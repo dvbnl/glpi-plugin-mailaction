@@ -27,7 +27,7 @@ function plugin_mailaction_install(): bool
     if (!$DB->tableExists('glpi_plugin_mailaction_profiles')) {
         $DB->doQuery(
             "CREATE TABLE `glpi_plugin_mailaction_profiles` (
-                `id` int(11) NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_profiles (id)',
+                `id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to glpi_profiles (id)',
                 `show_mailaction_onglet` char(1) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                 PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
@@ -50,7 +50,7 @@ function plugin_mailaction_install(): bool
             $DB->doQuery("ALTER TABLE glpi_plugin_mailaction_profiles DROP COLUMN `id`");
             $DB->doQuery(
                 "ALTER TABLE glpi_plugin_mailaction_profiles
-                 CHANGE profiles_id id int(11) NOT NULL DEFAULT '0'
+                 CHANGE profiles_id id int unsigned NOT NULL DEFAULT '0'
                  COMMENT 'RELATION to glpi_profiles (id)'"
             );
             $DB->doQuery("ALTER TABLE glpi_plugin_mailaction_profiles ADD PRIMARY KEY (id)");
@@ -62,7 +62,7 @@ function plugin_mailaction_install(): bool
     if (!$DB->tableExists('glpi_plugin_mailaction_configs')) {
         $DB->doQuery(
             "CREATE TABLE `glpi_plugin_mailaction_configs` (
-                `id` int(11) NOT NULL DEFAULT '1',
+                `id` int unsigned NOT NULL DEFAULT '1',
                 `html_template` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                 PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"

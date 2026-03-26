@@ -5,7 +5,9 @@
  * AJAX endpoint: renders the email preview server-side, including GLPI tag resolution.
  */
 
-include(dirname(__DIR__, 3) . "/inc/includes.php");
+if (!defined('GLPI_ROOT')) {
+    include(dirname(__DIR__, 3) . "/inc/includes.php");
+}
 
 header('Content-Type: text/html; charset=utf-8');
 

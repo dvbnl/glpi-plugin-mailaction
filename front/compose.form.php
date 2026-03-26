@@ -5,7 +5,9 @@
  * Processes the email composition form and dispatches the message.
  */
 
-include(dirname(__DIR__, 3) . "/inc/includes.php");
+if (!defined('GLPI_ROOT')) {
+    include(dirname(__DIR__, 3) . "/inc/includes.php");
+}
 
 if (!isset($_POST["send"])) {
     Html::redirect("../index.php");
@@ -105,11 +107,6 @@ if (!$mailer->send()) {
     ]);
     if ($prepared) {
         $doc->add($prepared);
-        (new Document_Item())->add([
-            'documents_id' => $doc->getID(),
-            'itemtype'     => 'TicketTask',
-            'items_id'     => $task->getID(),
-        ]);
     }
 
     Session::addMessageAfterRedirect(sprintf(__('Email sent to %s', 'mailaction'), $toList));
