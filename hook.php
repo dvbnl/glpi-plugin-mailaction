@@ -64,8 +64,18 @@ function plugin_mailaction_install(): bool
             "CREATE TABLE `glpi_plugin_mailaction_configs` (
                 `id` int unsigned NOT NULL DEFAULT '1',
                 `html_template` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                `subject_prefix` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                 PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+        );
+    }
+
+    // Migration: add subject_prefix column if missing
+    if ($DB->tableExists('glpi_plugin_mailaction_configs')
+        && !$DB->fieldExists('glpi_plugin_mailaction_configs', 'subject_prefix')) {
+        $DB->doQuery(
+            "ALTER TABLE `glpi_plugin_mailaction_configs`
+             ADD `subject_prefix` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL"
         );
     }
 

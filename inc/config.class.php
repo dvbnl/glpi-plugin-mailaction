@@ -25,6 +25,18 @@ class PluginMailactionConfig extends CommonDBTM {
     }
 
     /**
+     * Get the configured subject prefix, or the default.
+     * Use {{ID}} as placeholder for the zero-padded ticket number.
+     */
+    public static function getSubjectPrefix(): string {
+        $config = new self();
+        if ($config->getFromDB(1) && !empty($config->fields['subject_prefix'])) {
+            return $config->fields['subject_prefix'];
+        }
+        return '[GLPI #{{ID}}]';
+    }
+
+    /**
      * Default HTML email wrapper.
      * Supports {{SUBJECT}}, {{CONTENT}} and all ##ticket.xxx## GLPI tags.
      */
@@ -36,15 +48,6 @@ class PluginMailactionConfig extends CommonDBTM {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
 <style>
-/* MailAction theme colors – edit these to match your branding */
-.ma-label { color: #1a5276; }
-.ma-value { color: #2c3e50; }
-.ma-section-title { color: #1a5276; border-bottom: 2px solid #2e86c1; }
-.ma-stat-cell { background: #f0f7fd; }
-.ma-entry { background: #f0f7fd; border-left: 3px solid #2e86c1; }
-.ma-timestamp { color: #5b7fa5; }
-.ma-private-badge { background: #e5e7eb; color: #6b7280; }
-
 @media only screen and (max-width: 640px) {
   .ma-content { padding: 22px 16px !important; }
   td[width="33%"], td[width="34%"] { display: block !important; width: 100% !important; padding-bottom: 8px !important; }
@@ -55,7 +58,6 @@ class PluginMailactionConfig extends CommonDBTM {
   .ma-card, .ma-card td, .ma-card div, .ma-card span, .ma-card p, .ma-card li { color: #e8f4fd !important; }
   .ma-card a { color: #5dade2 !important; }
   .ma-card [bgcolor="#ffffff"] { background: #1b2838 !important; }
-  .ma-stat-cell, .ma-entry { background: #1f3044 !important; }
   .ma-import, .ma-import :is(p,div,span,li,td,th,h1,h2,h3) { color: inherit !important; }
 }
 </style>
@@ -70,23 +72,23 @@ class PluginMailactionConfig extends CommonDBTM {
     <tr><td style="padding:24px 32px 16px 32px;background:linear-gradient(180deg,#f0f7fd 0%,#ffffff 100%);">
       <table style="border-spacing:0;" role="presentation" width="100%" cellpadding="0" cellspacing="0">
         <tr>
-          <td class="ma-label" style="font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:1.5px;padding-bottom:6px;">
+          <td style="font-size:11px;font-weight:bold;color:#1a5276;text-transform:uppercase;letter-spacing:1.5px;padding-bottom:6px;">
             <span style="display:inline-block;background:#eaf5eb;color:#27ae60;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:bold;letter-spacing:1px;">TICKET UPDATE</span>
           </td>
         </tr>
         <tr>
-          <td class="ma-label" style="font-size:18px;font-weight:700;line-height:1.35;">{{SUBJECT}}</td>
+          <td style="font-size:18px;font-weight:700;color:#1a5276;line-height:1.35;">{{SUBJECT}}</td>
         </tr>
       </table>
     </td></tr>
     <!-- Divider -->
-    <tr><td style="padding:0 32px;"><div class="ma-section-title" style="opacity:0.2;">&nbsp;</div></td></tr>
+    <tr><td style="padding:0 32px;"><div style="border-top:2px solid #2e86c1;opacity:0.2;">&nbsp;</div></td></tr>
     <!-- Body -->
-    <tr><td class="ma-content ma-value" style="padding:20px 32px 28px 32px;font-size:14px;line-height:1.65;">
+    <tr><td class="ma-content" style="padding:20px 32px 28px 32px;font-size:14px;color:#2c3e50;line-height:1.65;">
       <div class="ma-import">{{CONTENT}}</div>
     </td></tr>
     <!-- Footer -->
-    <tr><td class="ma-stat-cell" style="padding:16px 32px;border-top:1px solid #d4e6f1;text-align:center;">
+    <tr><td style="background:#f0f7fd;padding:16px 32px;border-top:1px solid #d4e6f1;text-align:center;">
       <span style="font-size:12px;color:#7fb3d8;">Sent via GLPI &mdash; MailAction Plugin</span>
     </td></tr>
   </table>
@@ -230,12 +232,29 @@ class PluginMailactionConfig extends CommonDBTM {
         }
 
         $template = $config->fields['html_template'] ?? '';
+        $subjectPrefix = $config->fields['subject_prefix'] ?? '';
         $usingDefault = empty($template);
         $displayValue = $usingDefault ? self::getDefaultTemplate() : $template;
+        $prefixDisplay = !empty($subjectPrefix) ? $subjectPrefix : '[GLPI #{{ID}}]';
 
         echo '<div class="container-fluid">';
         echo '<form method="post" action="' . PLUGIN_MAILACTION_WEB_DIR . '/front/config.form.php">';
 
+        // Subject prefix setting
+        echo '<div class="card mb-3">';
+        echo '<div class="card-header"><h3 class="card-title mb-0">';
+        echo '<i class="fas fa-envelope me-2"></i>';
+        echo __('Email subject prefix', 'mailaction');
+        echo '</h3></div>';
+        echo '<div class="card-body">';
+        echo '<p class="text-muted">';
+        echo __('Set the prefix for the email subject line. Use {{ID}} for the zero-padded ticket number.', 'mailaction');
+        echo '</p>';
+        echo '<input type="text" name="subject_prefix" class="form-control" style="max-width:400px;" value="' . htmlspecialchars($prefixDisplay) . '" placeholder="[GLPI #{{ID}}]">';
+        echo '</div>';
+        echo '</div>';
+
+        // HTML template setting
         echo '<div class="card mb-3">';
         echo '<div class="card-header"><h3 class="card-title mb-0">';
         echo '<i class="fas fa-palette me-2"></i>';

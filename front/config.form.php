@@ -13,21 +13,26 @@ Session::checkRight('config', UPDATE);
 
 if (isset($_POST['save'])) {
     $config = new PluginMailactionConfig();
+    $data = [
+        'id'              => 1,
+        'html_template'   => $_POST['html_template'] ?? '',
+        'subject_prefix'  => $_POST['subject_prefix'] ?? '',
+    ];
     if (!$config->getFromDB(1)) {
-        $config->add(['id' => 1, 'html_template' => $_POST['html_template'] ?? '']);
+        $config->add($data);
     } else {
-        $config->update(['id' => 1, 'html_template' => $_POST['html_template'] ?? '']);
+        $config->update($data);
     }
-    Session::addMessageAfterRedirect(__('Email template saved', 'mailaction'));
+    Session::addMessageAfterRedirect(__('Configuration saved', 'mailaction'));
     Html::back();
 } elseif (isset($_POST['reset'])) {
     $config = new PluginMailactionConfig();
     if (!$config->getFromDB(1)) {
-        $config->add(['id' => 1, 'html_template' => '']);
+        $config->add(['id' => 1, 'html_template' => '', 'subject_prefix' => '']);
     } else {
-        $config->update(['id' => 1, 'html_template' => '']);
+        $config->update(['id' => 1, 'html_template' => '', 'subject_prefix' => '']);
     }
-    Session::addMessageAfterRedirect(__('Email template reset to default', 'mailaction'));
+    Session::addMessageAfterRedirect(__('Configuration reset to default', 'mailaction'));
     Html::back();
 } else {
     Html::header(__('MailAction configuration', 'mailaction'), $_SERVER['PHP_SELF'], 'config', 'plugins');
