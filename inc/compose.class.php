@@ -204,15 +204,15 @@ class PluginMailactionCompose extends CommonDBTM {
 
         // Priority / Urgency / Impact row
         $b .= '<table style="width:100%;border-collapse:collapse;margin-bottom:16px;" cellpadding="0" cellspacing="0"><tr>';
-        $b .= '<td style="width:33%;padding:10px 12px;background:#f0f7fd;border-radius:8px 0 0 8px;text-align:center;">';
-        $b .= '<div style="font-size:11px;font-weight:bold;color:#1a5276;text-transform:uppercase;letter-spacing:0.5px;">' . __('Urgency', 'mailaction') . '</div>';
-        $b .= '<div style="font-size:14px;color:#1a5276;font-weight:600;padding-top:2px;">' . $meta['urgency'] . '</div></td>';
-        $b .= '<td style="width:34%;padding:10px 12px;background:#f0f7fd;text-align:center;">';
-        $b .= '<div style="font-size:11px;font-weight:bold;color:#1a5276;text-transform:uppercase;letter-spacing:0.5px;">' . __('Impact', 'mailaction') . '</div>';
-        $b .= '<div style="font-size:14px;color:#1a5276;font-weight:600;padding-top:2px;">' . $meta['impact'] . '</div></td>';
-        $b .= '<td style="width:33%;padding:10px 12px;background:#f0f7fd;border-radius:0 8px 8px 0;text-align:center;">';
-        $b .= '<div style="font-size:11px;font-weight:bold;color:#1a5276;text-transform:uppercase;letter-spacing:0.5px;">' . __('Priority', 'mailaction') . '</div>';
-        $b .= '<div style="font-size:14px;color:#1a5276;font-weight:600;padding-top:2px;">' . $meta['priority'] . '</div></td>';
+        $b .= '<td class="ma-stat-cell" style="width:33%;padding:10px 12px;border-radius:8px 0 0 8px;text-align:center;">';
+        $b .= '<div class="ma-label" style="font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;">' . __('Urgency', 'mailaction') . '</div>';
+        $b .= '<div class="ma-label" style="font-size:14px;font-weight:600;padding-top:2px;">' . $meta['urgency'] . '</div></td>';
+        $b .= '<td class="ma-stat-cell" style="width:34%;padding:10px 12px;text-align:center;">';
+        $b .= '<div class="ma-label" style="font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;">' . __('Impact', 'mailaction') . '</div>';
+        $b .= '<div class="ma-label" style="font-size:14px;font-weight:600;padding-top:2px;">' . $meta['impact'] . '</div></td>';
+        $b .= '<td class="ma-stat-cell" style="width:33%;padding:10px 12px;border-radius:0 8px 8px 0;text-align:center;">';
+        $b .= '<div class="ma-label" style="font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;">' . __('Priority', 'mailaction') . '</div>';
+        $b .= '<div class="ma-label" style="font-size:14px;font-weight:600;padding-top:2px;">' . $meta['priority'] . '</div></td>';
         $b .= '</tr></table>';
 
         // People
@@ -232,7 +232,7 @@ class PluginMailactionCompose extends CommonDBTM {
         $b .= '</table>';
 
         // Ticket content
-        $b .= '<div style="font-size:12px;font-weight:bold;color:#1a5276;text-transform:uppercase;letter-spacing:1px;padding-bottom:8px;margin-bottom:12px;border-bottom:2px solid #2e86c1;">';
+        $b .= '<div class="ma-section-title" style="font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;padding-bottom:8px;margin-bottom:12px;">';
         $b .= __('Content of the initial ticket', 'mailaction') . '</div>';
         $b .= '<div style="line-height:1.65;">' . $meta['content'] . '</div>';
 
@@ -254,14 +254,14 @@ class PluginMailactionCompose extends CommonDBTM {
         usort($entries, fn($a, $c) => strtotime($c['date']) - strtotime($a['date']));
 
         if (count($entries) > 0) {
-            $b .= '<div style="font-size:12px;font-weight:bold;color:#1a5276;text-transform:uppercase;letter-spacing:1px;padding:16px 0 8px 0;margin-bottom:12px;border-bottom:2px solid #2e86c1;">';
+            $b .= '<div class="ma-section-title" style="font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;padding:16px 0 8px 0;margin-bottom:12px;">';
             $b .= __('Ticket tasks and followups', 'mailaction') . '</div>';
             foreach ($entries as $entry) {
                 $cls = ($entry['is_private'] == 1) ? ' is_private' : '';
-                $b .= '<div class="mailaction-entry' . $cls . '" style="margin-bottom:12px;padding:12px;background:#f0f7fd;border-radius:8px;border-left:3px solid #2e86c1;">';
-                $b .= '<div style="font-size:12px;color:#5b7fa5;margin-bottom:6px;">' . Html::convDateTime($entry['date']);
+                $b .= '<div class="ma-entry mailaction-entry' . $cls . '" style="margin-bottom:12px;padding:12px;border-radius:8px;">';
+                $b .= '<div class="ma-timestamp" style="font-size:12px;margin-bottom:6px;">' . Html::convDateTime($entry['date']);
                 if ($entry['is_private'] == 1) {
-                    $b .= ' <span style="background:#e5e7eb;color:#6b7280;padding:1px 6px;border-radius:4px;font-size:11px;">' . __('Private', 'mailaction') . '</span>';
+                    $b .= ' <span class="ma-private-badge" style="padding:1px 6px;border-radius:4px;font-size:11px;">' . __('Private', 'mailaction') . '</span>';
                 }
                 $b .= '</div>';
                 $b .= '<div style="line-height:1.65;">' . $entry['content'] . '</div>';
@@ -277,8 +277,8 @@ class PluginMailactionCompose extends CommonDBTM {
      */
     private static function metaRow(string $label, string $value): string {
         return '<tr>'
-            . '<td style="padding:6px 12px 6px 0;font-size:12px;font-weight:bold;color:#1a5276;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;vertical-align:top;width:140px;">' . $label . '</td>'
-            . '<td style="padding:6px 0;font-size:14px;color:#2c3e50;line-height:1.5;">' . $value . '</td>'
+            . '<td class="ma-label" style="padding:6px 12px 6px 0;font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;vertical-align:top;width:140px;">' . $label . '</td>'
+            . '<td class="ma-value" style="padding:6px 0;font-size:14px;line-height:1.5;">' . $value . '</td>'
             . '</tr>';
     }
 
