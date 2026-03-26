@@ -10,6 +10,14 @@ if (!defined('GLPI_ROOT')) {
 }
 
 header('Content-Type: text/html; charset=utf-8');
+header('X-Glpi-Csrf-Token: ' . Session::getNewCSRFToken());
+
+// Ensure the plugin is active and its functions are loaded
+if (!function_exists('plugin_mailaction_haveRight')) {
+    http_response_code(403);
+    echo 'Plugin not active';
+    exit;
+}
 
 // Authorization: require MailAction plugin right
 if (!plugin_mailaction_haveRight()) {

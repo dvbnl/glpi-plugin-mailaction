@@ -65,6 +65,14 @@ function plugin_mailaction_check_config(bool $verbose = false): bool
 }
 
 /**
+ * Check whether the current user has the MailAction plugin right.
+ */
+function plugin_mailaction_haveRight(): bool {
+    return isset($_SESSION["glpi_plugin_mailaction_profile"])
+        && $_SESSION['glpi_plugin_mailaction_profile']['show_mailaction_onglet'] == "1";
+}
+
+/**
  * Initialize the plugin: register classes and hooks.
  */
 function plugin_init_mailaction(): void

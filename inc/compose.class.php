@@ -473,9 +473,11 @@ class PluginMailactionCompose extends CommonDBTM {
             }
             $langUrl = $CFG_GLPI['root_doc'] . '/public/lib/tinymce-i18n/langs/' . $lang . '.js';
             $previewUrl = PLUGIN_MAILACTION_WEB_DIR . '/front/preview.ajax.php';
+            $ajaxCsrfToken = Session::getNewCSRFToken();
             ?>
             var mailactionPreviewUrl = '<?php echo $previewUrl; ?>';
             var mailactionTicketId = <?php echo (int)$ticketId; ?>;
+            var mailactionCsrfToken = '<?php echo $ajaxCsrfToken; ?>';
 
             tinymce.init({
                 language_url: '<?php echo $langUrl ?>',
@@ -516,10 +518,16 @@ class PluginMailactionCompose extends CommonDBTM {
                 formData.append('subject', subject);
                 formData.append('body', body);
                 formData.append('hide_private', hidePrivate);
-                formData.append('_glpi_csrf_token', getAjaxCsrfToken());
+                formData.append('_glpi_csrf_token', mailactionCsrfToken);
 
                 fetch(mailactionPreviewUrl, { method: 'POST', body: formData })
-                    .then(function(r) { return r.text(); })
+                    .then(function(r) {
+                        var newToken = r.headers.get('X-Glpi-Csrf-Token');
+                        if (newToken) {
+                            mailactionCsrfToken = newToken;
+                        }
+                        return r.text();
+                    })
                     .then(function(html) {
                         var previewIframe = document.getElementById('mailaction-preview-iframe');
                         var modal = new bootstrap.Modal(document.getElementById('mailaction-preview-modal'));

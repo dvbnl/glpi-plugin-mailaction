@@ -106,7 +106,4 @@ class PluginMailactionProfile extends CommonDBTM {
     }
 }
 
-function plugin_mailaction_haveRight(): bool {
-    return isset($_SESSION["glpi_plugin_mailaction_profile"])
-        && $_SESSION['glpi_plugin_mailaction_profile']['show_mailaction_onglet'] == "1";
-}
+// Function moved to setup.php so it is always available when the plugin is active.

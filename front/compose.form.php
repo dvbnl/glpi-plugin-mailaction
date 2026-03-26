@@ -13,6 +13,12 @@ if (!isset($_POST["send"])) {
     Html::redirect("../index.php");
 }
 
+// Ensure the plugin is active and its functions are loaded
+if (!function_exists('plugin_mailaction_haveRight')) {
+    Session::addMessageAfterRedirect(__('Plugin not active', 'mailaction'), false, ERROR);
+    Html::back();
+}
+
 // Authorization: require MailAction plugin right
 if (!plugin_mailaction_haveRight()) {
     Session::addMessageAfterRedirect(__('Access denied', 'mailaction'), false, ERROR);
