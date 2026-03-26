@@ -1,0 +1,85 @@
+<root>
+   <name>MailAction</name>
+   <key>mailaction</key>
+   <state>stable</state>
+   <logo>https://raw.githubusercontent.com/dvbnl/glpi-plugin-mailaction/main/pics/MailAction-Logo.png</logo>
+   <description>
+      <short>
+         <en><![CDATA[Send ticket information by email to requesters, technicians, or observers.]]></en>
+         <fr><![CDATA[Envoyer les informations d'un ticket par e-mail aux demandeurs, techniciens ou observateurs.]]></fr>
+         <nl><![CDATA[Verstuur ticketinformatie per e-mail naar aanvragers, technici of waarnemers.]]></nl>
+         <de><![CDATA[Ticket-Informationen per E-Mail an Anfragende, Techniker oder Beobachter senden.]]></de>
+         <es><![CDATA[Enviar información del ticket por correo electrónico a solicitantes, técnicos u observadores.]]></es>
+         <pt><![CDATA[Enviar informações do chamado por e-mail para solicitantes, técnicos ou observadores.]]></pt>
+      </short>
+      <long>
+         <en><![CDATA[MailAction adds a tab to GLPI tickets allowing you to email ticket content, tasks, and followups to any combination of requesters, assigned technicians, observers, or custom email addresses. Features include a customizable HTML email template with full GLPI notification tag support (##ticket.title##, ##FOREACHtasks##, etc.), a live email preview, privacy controls to exclude private entries, and a full audit trail. All sent emails are logged as ticket tasks with the complete email attached as a document.]]></en>
+         <fr><![CDATA[MailAction ajoute un onglet aux tickets GLPI permettant d'envoyer par e-mail le contenu du ticket, les tâches et les suivis à n'importe quelle combinaison de demandeurs, techniciens, observateurs ou adresses personnalisées. Inclut un modèle HTML personnalisable avec support complet des tags de notification GLPI, un aperçu en direct, des contrôles de confidentialité et un journal d'audit complet.]]></fr>
+         <nl><![CDATA[MailAction voegt een tabblad toe aan GLPI-tickets waarmee je ticketinhoud, taken en opvolgingen per e-mail kunt versturen naar elke combinatie van aanvragers, technici, waarnemers of aangepaste e-mailadressen. Bevat een aanpasbaar HTML-sjabloon met volledige ondersteuning voor GLPI-notificatietags, een live e-mailvoorbeeld, privacyopties en een volledig auditlogboek.]]></nl>
+         <de><![CDATA[MailAction fügt GLPI-Tickets einen Tab hinzu, über den Ticket-Inhalte, Aufgaben und Nachverfolgungen per E-Mail an beliebige Kombinationen von Anfragenden, Technikern, Beobachtern oder benutzerdefinierten Adressen gesendet werden können. Enthält eine anpassbare HTML-Vorlage mit voller GLPI-Benachrichtigungstag-Unterstützung, Live-Vorschau, Datenschutzoptionen und vollständiges Audit-Logging.]]></de>
+         <es><![CDATA[MailAction añade una pestaña a los tickets de GLPI que permite enviar por correo electrónico el contenido del ticket, tareas y seguimientos a cualquier combinación de solicitantes, técnicos, observadores o direcciones personalizadas. Incluye una plantilla HTML personalizable con soporte completo de etiquetas de notificación GLPI, vista previa en vivo, controles de privacidad y registro de auditoría completo.]]></es>
+         <pt><![CDATA[MailAction adiciona uma aba aos chamados do GLPI permitindo enviar por e-mail o conteúdo do chamado, tarefas e acompanhamentos para qualquer combinação de solicitantes, técnicos, observadores ou endereços personalizados. Inclui modelo HTML personalizável com suporte completo a tags de notificação GLPI, pré-visualização ao vivo, controles de privacidade e registro de auditoria completo.]]></pt>
+      </long>
+   </description>
+   <homepage>https://github.com/dvbnl/glpi-plugin-mailaction</homepage>
+   <download>https://github.com/dvbnl/glpi-plugin-mailaction/releases</download>
+   <issues>https://github.com/dvbnl/glpi-plugin-mailaction/issues</issues>
+   <readme>https://raw.githubusercontent.com/dvbnl/glpi-plugin-mailaction/main/README.md</readme>
+   <authors>
+      <author>DVBNL</author>
+   </authors>
+   <versions>
+      <version>
+         <num>1.0.0</num>
+         <compatibility>~11.0</compatibility>
+         <download_url>https://github.com/dvbnl/glpi-plugin-mailaction/releases/download/v1.0.0/mailaction-1.0.0.zip</download_url>
+      </version>
+   </versions>
+   <langs>
+      <lang>en_GB</lang>
+      <lang>nl_NL</lang>
+      <lang>fr_FR</lang>
+      <lang>de_DE</lang>
+      <lang>es_ES</lang>
+      <lang>pt</lang>
+   </langs>
+   <license><![CDATA[GPL v3+]]></license>
+   <tags>
+      <en>
+         <tag>Helpdesk</tag>
+         <tag>Email</tag>
+         <tag>Ticket</tag>
+         <tag>Notification</tag>
+      </en>
+      <fr>
+         <tag>Helpdesk</tag>
+         <tag>Email</tag>
+         <tag>Ticket</tag>
+         <tag>Notification</tag>
+      </fr>
+      <nl>
+         <tag>Helpdesk</tag>
+         <tag>Email</tag>
+         <tag>Ticket</tag>
+         <tag>Notificatie</tag>
+      </nl>
+      <de>
+         <tag>Helpdesk</tag>
+         <tag>Email</tag>
+         <tag>Ticket</tag>
+         <tag>Benachrichtigung</tag>
+      </de>
+      <es>
+         <tag>Helpdesk</tag>
+         <tag>Email</tag>
+         <tag>Ticket</tag>
+         <tag>Notificaci&oacute;n</tag>
+      </es>
+      <pt>
+         <tag>Helpdesk</tag>
+         <tag>Email</tag>
+         <tag>Ticket</tag>
+         <tag>Notifica&ccedil;&atilde;o</tag>
+      </pt>
+   </tags>
+</root>

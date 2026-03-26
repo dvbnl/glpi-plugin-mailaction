@@ -1,0 +1,203 @@
+# MailAction - Dutch translation
+# Copyright (C) 2026 DVBNL
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: MailAction 1.0.0\n"
+"POT-Creation-Date: 2026-03-26 12:00+0100\n"
+"PO-Revision-Date: 2026-03-26 12:00+0100\n"
+"Last-Translator: DVBNL\n"
+"Language-Team: Dutch\n"
+"Language: nl_NL\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "mailaction"
+msgid "User rights management"
+msgstr "Rechtenbeheer"
+
+msgctxt "mailaction"
+msgid "Tab display"
+msgstr "Tabblad weergeven"
+
+msgctxt "mailaction"
+msgid "MailAction"
+msgstr "MailAction"
+
+msgctxt "mailaction"
+msgid "Send"
+msgstr "Verzenden"
+
+msgctxt "mailaction"
+msgid "Content of the initial ticket"
+msgstr "Inhoud van het oorspronkelijke ticket"
+
+msgctxt "mailaction"
+msgid "Ticket tasks and followups"
+msgstr "Tickettaken en opvolgingen"
+
+msgctxt "mailaction"
+msgid "Send ticket information by email"
+msgstr "Ticketinformatie per e-mail verzenden"
+
+msgctxt "mailaction"
+msgid "From"
+msgstr "Van"
+
+msgctxt "mailaction"
+msgid "To"
+msgstr "Aan"
+
+msgctxt "mailaction"
+msgid "Requesters"
+msgstr "Aanvragers"
+
+msgctxt "mailaction"
+msgid "Technicians"
+msgstr "Technici"
+
+msgctxt "mailaction"
+msgid "Observers"
+msgstr "Waarnemers"
+
+msgctxt "mailaction"
+msgid "Or enter a custom email address"
+msgstr "Of voer een aangepast e-mailadres in"
+
+msgctxt "mailaction"
+msgid "Hide private tasks and private followups"
+msgstr "Verberg privétaken en privéopvolgingen"
+
+msgctxt "mailaction"
+msgid "Subject"
+msgstr "Onderwerp"
+
+msgctxt "mailaction"
+msgid "Message"
+msgstr "Bericht"
+
+msgctxt "mailaction"
+msgid "Please select at least one recipient or enter a custom email address"
+msgstr "Selecteer ten minste één ontvanger of voer een aangepast e-mailadres in"
+
+msgctxt "mailaction"
+msgid "Invalid sender email address"
+msgstr "Ongeldig afzender e-mailadres"
+
+msgctxt "mailaction"
+msgid "No valid recipient specified"
+msgstr "Geen geldige ontvanger opgegeven"
+
+msgctxt "mailaction"
+msgid "Your email could not be processed. If the problem persists, contact the administrator."
+msgstr "Uw e-mail kon niet worden verwerkt. Neem contact op met de beheerder als het probleem aanhoudt."
+
+msgctxt "mailaction"
+msgid "Email sent via MailAction"
+msgstr "E-mail verzonden via MailAction"
+
+msgctxt "mailaction"
+msgid "Email sent to %s"
+msgstr "E-mail verzonden naar %s"
+
+msgctxt "mailaction"
+msgid "MailAction configuration"
+msgstr "MailAction configuratie"
+
+msgctxt "mailaction"
+msgid "Email HTML template"
+msgstr "E-mail HTML-sjabloon"
+
+msgctxt "mailaction"
+msgid "Customize the HTML wrapper for outgoing emails. Use {{SUBJECT}} for the email subject and {{CONTENT}} for the ticket content."
+msgstr "Pas de HTML-wrapper aan voor uitgaande e-mails. Gebruik {{SUBJECT}} voor het onderwerp en {{CONTENT}} voor de ticketinhoud."
+
+msgctxt "mailaction"
+msgid "Currently using the default template. Edit below and save to use a custom template."
+msgstr "Momenteel wordt het standaardsjabloon gebruikt. Bewerk hieronder en sla op om een aangepast sjabloon te gebruiken."
+
+msgctxt "mailaction"
+msgid "Save"
+msgstr "Opslaan"
+
+msgctxt "mailaction"
+msgid "Reset to default"
+msgstr "Standaard herstellen"
+
+msgctxt "mailaction"
+msgid "Email template saved"
+msgstr "E-mailsjabloon opgeslagen"
+
+msgctxt "mailaction"
+msgid "Email template reset to default"
+msgstr "E-mailsjabloon hersteld naar standaard"
+
+msgctxt "mailaction"
+msgid "Preview"
+msgstr "Voorbeeld"
+
+msgctxt "mailaction"
+msgid "Email preview"
+msgstr "E-mail voorbeeld"
+
+msgctxt "mailaction"
+msgid "Close"
+msgstr "Sluiten"
+
+msgctxt "mailaction"
+msgid "Ticket"
+msgstr "Ticket"
+
+msgctxt "mailaction"
+msgid "Title"
+msgstr "Titel"
+
+msgctxt "mailaction"
+msgid "Status"
+msgstr "Status"
+
+msgctxt "mailaction"
+msgid "Date opened"
+msgstr "Geopend op"
+
+msgctxt "mailaction"
+msgid "Date closed"
+msgstr "Gesloten op"
+
+msgctxt "mailaction"
+msgid "Category"
+msgstr "Categorie"
+
+msgctxt "mailaction"
+msgid "Request type"
+msgstr "Aanvraagtype"
+
+msgctxt "mailaction"
+msgid "Urgency"
+msgstr "Urgentie"
+
+msgctxt "mailaction"
+msgid "Impact"
+msgstr "Impact"
+
+msgctxt "mailaction"
+msgid "Priority"
+msgstr "Prioriteit"
+
+msgctxt "mailaction"
+msgid "Assigned groups"
+msgstr "Toegewezen groepen"
+
+msgctxt "mailaction"
+msgid "Private"
+msgstr "Privé"
+
+msgctxt "mailaction"
+msgid "No recipients with email addresses found on this ticket."
+msgstr "Geen ontvangers met e-mailadressen gevonden op dit ticket."
+
+msgctxt "mailaction"
+msgid "Loading..."
+msgstr "Laden..."

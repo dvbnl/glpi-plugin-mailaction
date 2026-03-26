@@ -1,0 +1,198 @@
+# MailAction - Translation template
+# Copyright (C) 2026 DVBNL
+#
+#, fuzzy
+msgid   ""
+msgstr  "Project-Id-Version: MailAction 1.0.0\n"
+        "POT-Creation-Date: 2026-03-26 12:00+0100\n"
+        "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+        "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+        "Language-Team: LANGUAGE\n"
+        "Language: \n"
+        "MIME-Version: 1.0\n"
+        "Content-Type: text/plain; charset=UTF-8\n"
+        "Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "mailaction"
+msgid "User rights management"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Tab display"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "MailAction"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Send"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Content of the initial ticket"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Ticket tasks and followups"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Send ticket information by email"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "From"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "To"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Requesters"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Technicians"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Observers"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Or enter a custom email address"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Hide private tasks and private followups"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Subject"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Message"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Please select at least one recipient or enter a custom email address"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Invalid sender email address"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "No valid recipient specified"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Your email could not be processed. If the problem persists, contact the administrator."
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Email sent via MailAction"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Email sent to %s"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "MailAction configuration"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Email HTML template"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Customize the HTML wrapper for outgoing emails. Use {{SUBJECT}} for the email subject and {{CONTENT}} for the ticket content."
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Currently using the default template. Edit below and save to use a custom template."
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Save"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Reset to default"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Email template saved"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Email template reset to default"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Preview"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Email preview"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Close"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Ticket"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Title"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Status"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Date opened"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Date closed"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Category"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Request type"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Urgency"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Impact"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Priority"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Assigned groups"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "Private"
+msgstr ""
+
+msgctxt "mailaction"
+msgid "No recipients with email addresses found on this ticket."
+msgstr ""

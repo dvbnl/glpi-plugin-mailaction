@@ -1,0 +1,203 @@
+# MailAction - German translation
+# Copyright (C) 2026 DVBNL
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: MailAction 1.0.0\n"
+"POT-Creation-Date: 2026-03-26 12:00+0100\n"
+"PO-Revision-Date: 2026-03-26 12:00+0100\n"
+"Last-Translator: DVBNL\n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "mailaction"
+msgid "User rights management"
+msgstr "Rechte-Management"
+
+msgctxt "mailaction"
+msgid "Tab display"
+msgstr "Registerkarte anzeigen"
+
+msgctxt "mailaction"
+msgid "MailAction"
+msgstr "MailAction"
+
+msgctxt "mailaction"
+msgid "Send"
+msgstr "Senden"
+
+msgctxt "mailaction"
+msgid "Content of the initial ticket"
+msgstr "Inhalt des ursprünglichen Tickets"
+
+msgctxt "mailaction"
+msgid "Ticket tasks and followups"
+msgstr "Ticket-Aufgaben und Nachverfolgungen"
+
+msgctxt "mailaction"
+msgid "Send ticket information by email"
+msgstr "Ticket-Informationen per E-Mail senden"
+
+msgctxt "mailaction"
+msgid "From"
+msgstr "Von"
+
+msgctxt "mailaction"
+msgid "To"
+msgstr "An"
+
+msgctxt "mailaction"
+msgid "Requesters"
+msgstr "Anfragende"
+
+msgctxt "mailaction"
+msgid "Technicians"
+msgstr "Techniker"
+
+msgctxt "mailaction"
+msgid "Observers"
+msgstr "Beobachter"
+
+msgctxt "mailaction"
+msgid "Or enter a custom email address"
+msgstr "Oder eine benutzerdefinierte E-Mail-Adresse eingeben"
+
+msgctxt "mailaction"
+msgid "Hide private tasks and private followups"
+msgstr "Private Aufgaben und private Nachverfolgungen ausblenden"
+
+msgctxt "mailaction"
+msgid "Subject"
+msgstr "Betreff"
+
+msgctxt "mailaction"
+msgid "Message"
+msgstr "Nachricht"
+
+msgctxt "mailaction"
+msgid "Please select at least one recipient or enter a custom email address"
+msgstr "Bitte wählen Sie mindestens einen Empfänger oder geben Sie eine E-Mail-Adresse ein"
+
+msgctxt "mailaction"
+msgid "Invalid sender email address"
+msgstr "Ungültige Absender-E-Mail-Adresse"
+
+msgctxt "mailaction"
+msgid "No valid recipient specified"
+msgstr "Kein gültiger Empfänger angegeben"
+
+msgctxt "mailaction"
+msgid "Your email could not be processed. If the problem persists, contact the administrator."
+msgstr "Ihre E-Mail konnte nicht verarbeitet werden. Wenden Sie sich an den Administrator, wenn das Problem weiterhin besteht."
+
+msgctxt "mailaction"
+msgid "Email sent via MailAction"
+msgstr "E-Mail gesendet über MailAction"
+
+msgctxt "mailaction"
+msgid "Email sent to %s"
+msgstr "E-Mail gesendet an %s"
+
+msgctxt "mailaction"
+msgid "MailAction configuration"
+msgstr "MailAction Konfiguration"
+
+msgctxt "mailaction"
+msgid "Email HTML template"
+msgstr "E-Mail HTML-Vorlage"
+
+msgctxt "mailaction"
+msgid "Customize the HTML wrapper for outgoing emails. Use {{SUBJECT}} for the email subject and {{CONTENT}} for the ticket content."
+msgstr "Passen Sie die HTML-Vorlage für ausgehende E-Mails an. Verwenden Sie {{SUBJECT}} für den Betreff und {{CONTENT}} für den Ticket-Inhalt."
+
+msgctxt "mailaction"
+msgid "Currently using the default template. Edit below and save to use a custom template."
+msgstr "Derzeit wird die Standardvorlage verwendet. Bearbeiten Sie sie unten und speichern Sie, um eine benutzerdefinierte Vorlage zu verwenden."
+
+msgctxt "mailaction"
+msgid "Save"
+msgstr "Speichern"
+
+msgctxt "mailaction"
+msgid "Reset to default"
+msgstr "Standard wiederherstellen"
+
+msgctxt "mailaction"
+msgid "Email template saved"
+msgstr "E-Mail-Vorlage gespeichert"
+
+msgctxt "mailaction"
+msgid "Email template reset to default"
+msgstr "E-Mail-Vorlage auf Standard zurückgesetzt"
+
+msgctxt "mailaction"
+msgid "Preview"
+msgstr "Vorschau"
+
+msgctxt "mailaction"
+msgid "Email preview"
+msgstr "E-Mail-Vorschau"
+
+msgctxt "mailaction"
+msgid "Close"
+msgstr "Schließen"
+
+msgctxt "mailaction"
+msgid "Ticket"
+msgstr "Ticket"
+
+msgctxt "mailaction"
+msgid "Title"
+msgstr "Titel"
+
+msgctxt "mailaction"
+msgid "Status"
+msgstr "Status"
+
+msgctxt "mailaction"
+msgid "Date opened"
+msgstr "Eröffnet am"
+
+msgctxt "mailaction"
+msgid "Date closed"
+msgstr "Geschlossen am"
+
+msgctxt "mailaction"
+msgid "Category"
+msgstr "Kategorie"
+
+msgctxt "mailaction"
+msgid "Request type"
+msgstr "Anfragetyp"
+
+msgctxt "mailaction"
+msgid "Urgency"
+msgstr "Dringlichkeit"
+
+msgctxt "mailaction"
+msgid "Impact"
+msgstr "Auswirkung"
+
+msgctxt "mailaction"
+msgid "Priority"
+msgstr "Priorität"
+
+msgctxt "mailaction"
+msgid "Assigned groups"
+msgstr "Zugewiesene Gruppen"
+
+msgctxt "mailaction"
+msgid "Private"
+msgstr "Privat"
+
+msgctxt "mailaction"
+msgid "No recipients with email addresses found on this ticket."
+msgstr "Keine Empfänger mit E-Mail-Adressen auf diesem Ticket gefunden."
+
+msgctxt "mailaction"
+msgid "Loading..."
+msgstr "Laden..."
