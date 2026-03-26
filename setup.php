@@ -16,7 +16,7 @@ if (!defined("PLUGIN_MAILACTION_DIR")) {
     define("PLUGIN_MAILACTION_DIR", Plugin::getPhpDir("mailaction"));
 }
 if (!defined("PLUGIN_MAILACTION_WEB_DIR")) {
-    define("PLUGIN_MAILACTION_WEB_DIR", Plugin::getPhpDir("mailaction", false));
+    define("PLUGIN_MAILACTION_WEB_DIR", Plugin::getWebDir("mailaction"));
 }
 
 /**

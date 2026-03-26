@@ -5,7 +5,7 @@
  * Processes the email composition form and dispatches the message.
  */
 
-include("../../../inc/includes.php");
+include(dirname(__DIR__, 3) . "/inc/includes.php");
 
 if (!isset($_POST["send"])) {
     Html::redirect("../index.php");

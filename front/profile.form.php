@@ -8,7 +8,7 @@
  *  ---------------------------------------------------------------------
  */
 
-include("../../../inc/includes.php");
+include(dirname(__DIR__, 3) . "/inc/includes.php");
 
 $prof = new PluginMailactionProfile();
 
