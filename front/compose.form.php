@@ -13,7 +13,20 @@ if (!isset($_POST["send"])) {
     Html::redirect("../index.php");
 }
 
+// Authorization: require MailAction plugin right
+if (!plugin_mailaction_haveRight()) {
+    Session::addMessageAfterRedirect(__('Access denied', 'mailaction'), false, ERROR);
+    Html::back();
+}
+
 $ticketId = (int)$_POST['id'];
+
+// Authorization: require read access to the ticket
+$ticket = new Ticket();
+if (!$ticket->can($ticketId, READ)) {
+    Session::addMessageAfterRedirect(__('Access denied', 'mailaction'), false, ERROR);
+    Html::back();
+}
 
 $from = filter_var($_POST['from'], FILTER_VALIDATE_EMAIL);
 if (!$from) {
@@ -44,14 +57,29 @@ if (empty($addresses)) {
     Html::back();
 }
 
-$body = stripslashes(html_entity_decode($_POST['body']));
+$body = Glpi\RichText\RichText::getSafeHtml($_POST['body'] ?? '');
 
 if (!empty($_POST['hide_private']) && $_POST['hide_private'] == '1') {
-    $body = preg_replace('/<div class=["\\\\"]*mailaction-entry\s+is_private["\\\\"]*>[\s\S]*?<\/div>\s*<hr>/i', '', $body);
-    $body = preg_replace('/<div class=["\\\\"]*is_private["\\\\"]*[^>]*>[\s\S]*?<\/div>/i', '', $body);
+    $dom = new DOMDocument();
+    @$dom->loadHTML('<?xml encoding="utf-8"?>' . $body, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    $xpath = new DOMXPath($dom);
+    foreach ($xpath->query('//*[contains(@class,"is_private")]') as $node) {
+        // Also remove a following <hr> sibling if present
+        $next = $node->nextSibling;
+        while ($next && $next->nodeType === XML_TEXT_NODE && trim($next->textContent) === '') {
+            $next = $next->nextSibling;
+        }
+        if ($next && $next->nodeName === 'hr') {
+            $next->parentNode->removeChild($next);
+        }
+        $node->parentNode->removeChild($node);
+    }
+    $body = $dom->saveHTML();
+    // Remove the xml encoding declaration we added
+    $body = preg_replace('/<\?xml encoding="utf-8"\?>\s*/', '', $body);
 }
 
-$subject = $_POST["subject"];
+$subject = str_replace(["\r", "\n"], ' ', $_POST['subject'] ?? '');
 $toList  = implode(', ', $addresses);
 
 // Apply HTML template, then resolve any ##ticket.xxx## GLPI tags
@@ -89,24 +117,32 @@ if (!$mailer->send()) {
 
     $task = new TicketTask();
     $task->add([
-        "tickets_id" => $ticketId,
+        "tickets_id"  => $ticketId,
         "actiontime"  => 0,
         "state"       => Planning::DONE,
+        "is_private"  => PluginMailactionConfig::getTaskPrivate() ? 1 : 0,
         "content"     => __('Email sent via MailAction', 'mailaction') . ' ' . __('to') . ' ' . $toList,
     ]);
 
     // Attach full email as HTML document
     $filename = 'ma-' . $ticketId . '-' . bin2hex(random_bytes(8)) . '.html';
-    file_put_contents(GLPI_TMP_DIR . "/$filename", $fullHtml);
+    $tmpPath  = GLPI_TMP_DIR . "/$filename";
+    file_put_contents($tmpPath, $fullHtml);
 
-    $doc = new Document();
-    $prepared = $doc->prepareInputForAdd([
-        "items_id"  => $task->getID(),
-        "itemtype"  => 'TicketTask',
-        "_filename" => [$filename],
-    ]);
-    if ($prepared) {
-        $doc->add($prepared);
+    try {
+        $doc = new Document();
+        $prepared = $doc->prepareInputForAdd([
+            "items_id"  => $task->getID(),
+            "itemtype"  => 'TicketTask',
+            "_filename" => [$filename],
+        ]);
+        if ($prepared) {
+            $doc->add($prepared);
+        }
+    } finally {
+        if (file_exists($tmpPath)) {
+            unlink($tmpPath);
+        }
     }
 
     Session::addMessageAfterRedirect(sprintf(__('Email sent to %s', 'mailaction'), $toList));

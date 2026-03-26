@@ -4,6 +4,20 @@ All notable changes to MailAction will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.0.1] - 2026-03-26
+
+### Added
+
+- **Private task setting** - tasks created by MailAction are now marked as private by default, configurable in plugin settings
+
+### Fixed
+
+- **Authorization checks** - added plugin right and ticket read-access checks to `compose.form.php` and `preview.ajax.php`, preventing unauthorized access to ticket data and email dispatch
+- **Server-side HTML sanitization** - email body is now sanitized via GLPI's `RichText::getSafeHtml()` (HTMLPurifier) instead of relying on client-side TinyMCE filtering
+- **Log injection** - subject line is sanitized to strip newline characters before being written to log files
+- **Private content filtering** - replaced bypassable regex-based filtering with a DOM-based approach (`DOMDocument`/`DOMXPath`) that correctly handles nested elements
+- **Temp file cleanup** - temporary HTML files are now cleaned up in a `finally` block, ensuring removal even if document creation fails
+
 ## [1.0.0] - 2026-03-26
 
 Initial release of MailAction for GLPI 11.

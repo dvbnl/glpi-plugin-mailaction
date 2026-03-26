@@ -17,6 +17,7 @@ if (isset($_POST['save'])) {
         'id'              => 1,
         'html_template'   => $_POST['html_template'] ?? '',
         'subject_prefix'  => $_POST['subject_prefix'] ?? '',
+        'task_private'    => isset($_POST['task_private']) ? (int)$_POST['task_private'] : 0,
     ];
     if (!$config->getFromDB(1)) {
         $config->add($data);
@@ -28,9 +29,9 @@ if (isset($_POST['save'])) {
 } elseif (isset($_POST['reset'])) {
     $config = new PluginMailactionConfig();
     if (!$config->getFromDB(1)) {
-        $config->add(['id' => 1, 'html_template' => '', 'subject_prefix' => '']);
+        $config->add(['id' => 1, 'html_template' => '', 'subject_prefix' => '', 'task_private' => 1]);
     } else {
-        $config->update(['id' => 1, 'html_template' => '', 'subject_prefix' => '']);
+        $config->update(['id' => 1, 'html_template' => '', 'subject_prefix' => '', 'task_private' => 1]);
     }
     Session::addMessageAfterRedirect(__('Configuration reset to default', 'mailaction'));
     Html::back();

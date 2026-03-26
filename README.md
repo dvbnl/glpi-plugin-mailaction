@@ -32,6 +32,7 @@ MailAction adds a **MailAction** tab to every ticket in GLPI. From this tab, you
 - **GLPI notification tags** - Use all standard GLPI tags (`##ticket.title##`, `##ticket.status##`, `##FOREACHtasks##`, etc.) in custom templates
 - **Email preview** - Preview the fully rendered email (including resolved GLPI tags) before sending
 - **Full audit trail** - Every sent email is logged as a ticket task with the email body attached as a document
+- **Private tasks by default** - Tasks created by MailAction are private by default, with a toggle in plugin settings
 - **Profile-based access** - Control which GLPI profiles can see the MailAction tab
 - **Sender selection** - Choose from the GLPI notification sender address, admin address, or your own email
 
@@ -89,6 +90,10 @@ The template supports two types of placeholders:
 | `##IFticket.category##` ... `##ENDIFticket.category##` | Conditional block |
 
 All standard GLPI notification tags for tickets are supported. See GLPI's notification template documentation for the full list.
+
+### Private tasks
+
+By default, tasks created by MailAction (logging that an email was sent) are marked as private. You can toggle this in **Setup > Plugins > MailAction** under "Private tasks".
 
 ### Permissions
 

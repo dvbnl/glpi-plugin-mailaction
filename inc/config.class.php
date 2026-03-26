@@ -37,6 +37,17 @@ class PluginMailactionConfig extends CommonDBTM {
     }
 
     /**
+     * Whether tasks created by MailAction should be private by default.
+     */
+    public static function getTaskPrivate(): bool {
+        $config = new self();
+        if ($config->getFromDB(1) && isset($config->fields['task_private'])) {
+            return (bool)$config->fields['task_private'];
+        }
+        return true;
+    }
+
+    /**
      * Default HTML email wrapper.
      * Supports {{SUBJECT}}, {{CONTENT}} and all ##ticket.xxx## GLPI tags.
      */
@@ -233,6 +244,7 @@ class PluginMailactionConfig extends CommonDBTM {
 
         $template = $config->fields['html_template'] ?? '';
         $subjectPrefix = $config->fields['subject_prefix'] ?? '';
+        $taskPrivate = isset($config->fields['task_private']) ? (bool)$config->fields['task_private'] : true;
         $usingDefault = empty($template);
         $displayValue = $usingDefault ? self::getDefaultTemplate() : $template;
         $prefixDisplay = !empty($subjectPrefix) ? $subjectPrefix : '[GLPI #{{ID}}]';
@@ -251,6 +263,24 @@ class PluginMailactionConfig extends CommonDBTM {
         echo __('Set the prefix for the email subject line. Use {{ID}} for the zero-padded ticket number.', 'mailaction');
         echo '</p>';
         echo '<input type="text" name="subject_prefix" class="form-control" style="max-width:400px;" value="' . htmlspecialchars($prefixDisplay) . '" placeholder="[GLPI #{{ID}}]">';
+        echo '</div>';
+        echo '</div>';
+
+        // Task private setting
+        echo '<div class="card mb-3">';
+        echo '<div class="card-header"><h3 class="card-title mb-0">';
+        echo '<i class="fas fa-lock me-2"></i>';
+        echo __('Private tasks', 'mailaction');
+        echo '</h3></div>';
+        echo '<div class="card-body">';
+        echo '<p class="text-muted">';
+        echo __('When enabled, tasks created by MailAction (logging that an email was sent) will be marked as private by default.', 'mailaction');
+        echo '</p>';
+        echo '<div class="form-check form-switch">';
+        echo '<input type="hidden" name="task_private" value="0">';
+        echo '<input type="checkbox" name="task_private" value="1" class="form-check-input" id="task_private"' . ($taskPrivate ? ' checked' : '') . '>';
+        echo '<label class="form-check-label" for="task_private">' . __('Mark tasks as private', 'mailaction') . '</label>';
+        echo '</div>';
         echo '</div>';
         echo '</div>';
 

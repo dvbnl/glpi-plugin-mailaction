@@ -65,6 +65,7 @@ function plugin_mailaction_install(): bool
                 `id` int unsigned NOT NULL DEFAULT '1',
                 `html_template` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
                 `subject_prefix` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+                `task_private` tinyint(1) NOT NULL DEFAULT '1',
                 PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
         );
@@ -76,6 +77,15 @@ function plugin_mailaction_install(): bool
         $DB->doQuery(
             "ALTER TABLE `glpi_plugin_mailaction_configs`
              ADD `subject_prefix` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL"
+        );
+    }
+
+    // Migration: add task_private column if missing
+    if ($DB->tableExists('glpi_plugin_mailaction_configs')
+        && !$DB->fieldExists('glpi_plugin_mailaction_configs', 'task_private')) {
+        $DB->doQuery(
+            "ALTER TABLE `glpi_plugin_mailaction_configs`
+             ADD `task_private` tinyint(1) NOT NULL DEFAULT '1'"
         );
     }
 

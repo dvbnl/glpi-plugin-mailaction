@@ -11,17 +11,40 @@ if (!defined('GLPI_ROOT')) {
 
 header('Content-Type: text/html; charset=utf-8');
 
+// Authorization: require MailAction plugin right
+if (!plugin_mailaction_haveRight()) {
+    http_response_code(403);
+    echo 'Access denied';
+    exit;
+}
+
 if (!isset($_POST['id'])) {
     echo 'Missing ticket ID';
     exit;
 }
 
 $ticketId = (int)$_POST['id'];
-$subject  = $_POST['subject'] ?? '';
-$body     = stripslashes(html_entity_decode($_POST['body'] ?? ''));
+
+// Authorization: require read access to the ticket
+$ticket = new Ticket();
+if (!$ticket->can($ticketId, READ)) {
+    http_response_code(403);
+    echo 'Access denied';
+    exit;
+}
+
+$subject  = str_replace(["\r", "\n"], ' ', $_POST['subject'] ?? '');
+$body     = Glpi\RichText\RichText::getSafeHtml($_POST['body'] ?? '');
 
 if (!empty($_POST['hide_private']) && $_POST['hide_private'] == '1') {
-    $body = preg_replace('/<div class=["\\\\"]*mailaction-entry\s+is_private["\\\\"]*>[\s\S]*?<\/div>/i', '', $body);
+    $dom = new DOMDocument();
+    @$dom->loadHTML('<?xml encoding="utf-8"?>' . $body, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    $xpath = new DOMXPath($dom);
+    foreach ($xpath->query('//*[contains(@class,"is_private")]') as $node) {
+        $node->parentNode->removeChild($node);
+    }
+    $body = $dom->saveHTML();
+    $body = preg_replace('/<\?xml encoding="utf-8"\?>\s*/', '', $body);
 }
 
 $fullHtml = PluginMailactionConfig::applyTemplate($subject, $body);
