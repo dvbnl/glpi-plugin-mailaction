@@ -92,6 +92,9 @@ $toList  = implode(', ', $addresses);
 $fullHtml = PluginMailactionConfig::applyTemplate($subject, $body);
 $fullHtml = PluginMailactionConfig::resolveGlpiTags($ticketId, $fullHtml);
 
+// Ensure all GLPI document URLs are absolute (getSafeHtml may relativise them)
+$fullHtml = PluginMailactionCompose::absolutifyDocumentUrls($fullHtml);
+
 // Compose and dispatch
 $mailer = new GLPIMailer();
 $mailer->setFrom($from, $from);

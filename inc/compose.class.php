@@ -179,7 +179,7 @@ class PluginMailactionCompose extends CommonDBTM {
      * Convert relative GLPI document URLs (src/href) to absolute URLs
      * so that images and links work correctly in outgoing emails.
      */
-    private static function absolutifyDocumentUrls(string $html): string {
+    public static function absolutifyDocumentUrls(string $html): string {
         global $CFG_GLPI;
         $base = rtrim($CFG_GLPI['url_base'] ?? '', '/');
         if (empty($base)) {
