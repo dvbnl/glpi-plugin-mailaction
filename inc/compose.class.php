@@ -176,6 +176,25 @@ class PluginMailactionCompose extends CommonDBTM {
     }
 
     /**
+     * Convert relative GLPI document URLs (src/href) to absolute URLs
+     * so that images and links work correctly in outgoing emails.
+     */
+    private static function absolutifyDocumentUrls(string $html): string {
+        global $CFG_GLPI;
+        $base = rtrim($CFG_GLPI['url_base'] ?? '', '/');
+        if (empty($base)) {
+            return $html;
+        }
+        // Convert src="/front/..." and href="/front/..." to absolute URLs
+        $html = preg_replace(
+            '#((?:src|href)\s*=\s*["\'])(/front/document\.send\.php)#i',
+            '$1' . $base . '$2',
+            $html
+        );
+        return $html;
+    }
+
+    /**
      * Assemble the email subject and rich HTML body from ticket data.
      */
     public static function assembleContent(int $ticketId): array {
@@ -236,7 +255,7 @@ class PluginMailactionCompose extends CommonDBTM {
         // Ticket content
         $b .= '<div style="font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;padding-bottom:8px;margin-bottom:12px;border-bottom:2px solid currentColor;opacity:0.6;">';
         $b .= __('Content of the initial ticket', 'mailaction') . '</div>';
-        $b .= '<div style="line-height:1.65;">' . $meta['content'] . '</div>';
+        $b .= '<div style="line-height:1.65;">' . self::absolutifyDocumentUrls($meta['content']) . '</div>';
 
         // Tasks and followups
         $tasks = $DB->request([
@@ -266,7 +285,7 @@ class PluginMailactionCompose extends CommonDBTM {
                     $b .= ' <span style="background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:4px;font-size:11px;">' . __('Private', 'mailaction') . '</span>';
                 }
                 $b .= '</div>';
-                $b .= '<div style="line-height:1.65;">' . $entry['content'] . '</div>';
+                $b .= '<div style="line-height:1.65;">' . self::absolutifyDocumentUrls($entry['content']) . '</div>';
                 $b .= '</div>';
             }
         }
@@ -401,7 +420,7 @@ class PluginMailactionCompose extends CommonDBTM {
                             <div class="col-sm-10">
                                 <div class="form-check">
                                     <input type="checkbox" name="hide_private" id="hidePrivate"
-                                           value="1" class="form-check-input">
+                                           value="1" class="form-check-input" checked>
                                     <label class="form-check-label" for="hidePrivate">
                                         <?php echo __('Hide private tasks and private followups', 'mailaction'); ?>
                                     </label>
@@ -491,7 +510,15 @@ class PluginMailactionCompose extends CommonDBTM {
                 statusbar: true,
                 resize: true,
                 plugins: 'lists link image table code',
-                toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image table | code'
+                toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image table | code',
+                init_instance_callback: function(editor) {
+                    // Hide private entries by default (checkbox is checked on load)
+                    if (document.getElementById('hidePrivate').checked) {
+                        editor.dom.doc.querySelectorAll('.is_private').forEach(function(el) {
+                            el.style.display = 'none';
+                        });
+                    }
+                }
             });
 
             document.getElementById("hidePrivate").addEventListener("click", function() {

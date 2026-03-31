@@ -8,7 +8,7 @@
  *  ---------------------------------------------------------------------
  */
 
-define('MAILACTION_VERSION', '1.0.1');
+define('MAILACTION_VERSION', '1.0.2');
 define('MAILACTION_MIN_GLPI_VERSION', '11.0');
 define('MAILACTION_MAX_GLPI_VERSION', '11.0.99');
 

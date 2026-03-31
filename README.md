@@ -25,7 +25,7 @@ MailAction adds a **MailAction** tab to every ticket in GLPI. From this tab, you
 
 - **Smart recipient selection** - All ticket requesters, technicians, and observers (both GLPI users and external email addresses) are listed as checkboxes
 - **Custom addresses** - Add any external email address as an additional recipient
-- **Privacy control** - Option to hide private tasks and followups from the email
+- **Privacy control** - Option to hide private tasks and followups from the email (enabled by default)
 - **Rich text editor** - Full TinyMCE editor for composing the email body
 - **Rich ticket data** - Email body is pre-filled with ticket metadata (status, priority, urgency, impact, category, dates, people) plus content, tasks, and followups
 - **Customizable HTML template** - Configure a custom HTML email template via Setup > Plugins > MailAction
@@ -107,7 +107,7 @@ Go to **Administration > Profiles**, select a profile, and open the **MailAction
 2. Click the **MailAction** tab
 3. Select a sender address from the dropdown
 4. Check the recipients you want to email, or enter a custom address
-5. Optionally check "Hide private tasks and followups"
+5. Uncheck "Hide private tasks and followups" if you want to include private content (hidden by default)
 6. Edit the subject and message body as needed
 7. Click **Preview** to see how the email will look
 8. Click **Send**

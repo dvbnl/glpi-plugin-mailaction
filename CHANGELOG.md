@@ -4,6 +4,16 @@ All notable changes to MailAction will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.0.2] - 2026-03-31
+
+### Added
+
+- **Hide private by default** - the "Hide private tasks and followups" checkbox is now checked by default when composing an email, so private content is never sent accidentally
+
+### Fixed
+
+- **Broken images in emails** - inline images and screenshots (e.g. from signatures or pasted screenshots) now render correctly in outgoing emails by converting relative GLPI document URLs to absolute URLs
+
 ## [1.0.1] - 2026-03-26
 
 ### Added
