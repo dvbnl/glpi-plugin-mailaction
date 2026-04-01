@@ -5,13 +5,15 @@
  * Handles email composition, recipient resolution, and the ticket tab form.
  */
 
-class PluginMailactionCompose extends CommonDBTM {
+class PluginMailactionCompose extends CommonDBTM
+{
 
     /**
      * Get the display name for a GLPI user by ID.
      * Tries firstname+realname, then falls back to login name.
      */
-    private static function getUserDisplayName(int $userId): string {
+    private static function getUserDisplayName(int $userId): string
+    {
         $user = new User();
         if (!$user->getFromDB($userId)) {
             return '';
@@ -25,15 +27,16 @@ class PluginMailactionCompose extends CommonDBTM {
      * Get the primary email address for a GLPI user by ID.
      * Queries glpi_useremails directly, preferring is_default=1.
      */
-    private static function getUserEmailAddress(int $userId): string {
+    private static function getUserEmailAddress(int $userId): string
+    {
         global $DB;
 
         $rows = $DB->request([
-            'SELECT'   => ['email'],
-            'FROM'     => 'glpi_useremails',
-            'WHERE'    => ['users_id' => $userId],
-            'ORDER'    => ['is_default DESC'],
-            'LIMIT'    => 1,
+            'SELECT' => ['email'],
+            'FROM' => 'glpi_useremails',
+            'WHERE' => ['users_id' => $userId],
+            'ORDER' => ['is_default DESC'],
+            'LIMIT' => 1,
         ]);
         foreach ($rows as $row) {
             if (!empty($row['email'])) {
@@ -49,7 +52,8 @@ class PluginMailactionCompose extends CommonDBTM {
      * Returns a flat array of ['name' => ..., 'email' => ...] entries,
      * de-duplicated by email address.
      */
-    public static function resolveRecipients(int $ticketId): array {
+    public static function resolveRecipients(int $ticketId): array
+    {
         global $DB;
 
         $seen = [];
@@ -57,8 +61,8 @@ class PluginMailactionCompose extends CommonDBTM {
 
         $rows = $DB->request([
             'SELECT' => ['users_id', 'alternative_email'],
-            'FROM'   => 'glpi_tickets_users',
-            'WHERE'  => ['tickets_id' => $ticketId],
+            'FROM' => 'glpi_tickets_users',
+            'WHERE' => ['tickets_id' => $ticketId],
         ]);
 
         foreach ($rows as $row) {
@@ -83,7 +87,7 @@ class PluginMailactionCompose extends CommonDBTM {
             if ($email && !isset($seen[strtolower($email)])) {
                 $seen[strtolower($email)] = true;
                 $recipients[] = [
-                    'name'  => $label,
+                    'name' => $label,
                     'email' => $email,
                 ];
             }
@@ -95,7 +99,8 @@ class PluginMailactionCompose extends CommonDBTM {
     /**
      * Gather full ticket metadata for a rich email.
      */
-    public static function getTicketMeta(int $ticketId): array {
+    public static function getTicketMeta(int $ticketId): array
+    {
         global $DB;
 
         $meta = [];
@@ -105,13 +110,13 @@ class PluginMailactionCompose extends CommonDBTM {
         }
 
         $f = $ticket->fields;
-        $meta['id']       = $f['id'];
-        $meta['title']    = $f['name'];
-        $meta['date']     = Html::convDateTime($f['date']);
-        $meta['content']  = $f['content'];
-        $meta['status']   = Ticket::getStatus($f['status']);
-        $meta['urgency']  = CommonITILObject::getUrgencyName($f['urgency']);
-        $meta['impact']   = CommonITILObject::getImpactName($f['impact']);
+        $meta['id'] = $f['id'];
+        $meta['title'] = $f['name'];
+        $meta['date'] = Html::convDateTime($f['date']);
+        $meta['content'] = $f['content'];
+        $meta['status'] = Ticket::getStatus($f['status']);
+        $meta['urgency'] = CommonITILObject::getUrgencyName($f['urgency']);
+        $meta['impact'] = CommonITILObject::getImpactName($f['impact']);
         $meta['priority'] = CommonITILObject::getPriorityName($f['priority']);
         $meta['closedate'] = $f['closedate'] ? Html::convDateTime($f['closedate']) : '—';
 
@@ -139,12 +144,13 @@ class PluginMailactionCompose extends CommonDBTM {
 
         $rows = $DB->request([
             'SELECT' => ['users_id', 'type', 'alternative_email'],
-            'FROM'   => 'glpi_tickets_users',
-            'WHERE'  => ['tickets_id' => $ticketId],
+            'FROM' => 'glpi_tickets_users',
+            'WHERE' => ['tickets_id' => $ticketId],
         ]);
         foreach ($rows as $row) {
             $role = $roleMap[$row['type']] ?? null;
-            if (!$role) continue;
+            if (!$role)
+                continue;
             if ($row['users_id'] > 0) {
                 $name = self::getUserDisplayName($row['users_id']);
                 $email = self::getUserEmailAddress($row['users_id']);
@@ -161,8 +167,8 @@ class PluginMailactionCompose extends CommonDBTM {
         // Assigned groups
         $meta['groups'] = [];
         $grows = $DB->request([
-            'SELECT'    => ['g.name'],
-            'FROM'      => 'glpi_groups_tickets AS gt',
+            'SELECT' => ['g.name'],
+            'FROM' => 'glpi_groups_tickets AS gt',
             'LEFT JOIN' => [
                 'glpi_groups AS g' => ['ON' => ['gt' => 'groups_id', 'g' => 'id']],
             ],
@@ -179,7 +185,8 @@ class PluginMailactionCompose extends CommonDBTM {
      * Convert relative GLPI document URLs (src/href) to absolute URLs
      * so that images and links work correctly in outgoing emails.
      */
-    public static function absolutifyDocumentUrls(string $html): string {
+    public static function absolutifyDocumentUrls(string $html): string
+    {
         global $CFG_GLPI;
         $base = rtrim($CFG_GLPI['url_base'] ?? '', '/');
         if (empty($base)) {
@@ -195,9 +202,135 @@ class PluginMailactionCompose extends CommonDBTM {
     }
 
     /**
+     * Replace orphaned cid: references in <img> tags with document.send.php URLs.
+     */
+    public static function resolveCidImageReferences(string $html): string
+    {
+        global $CFG_GLPI;
+        $base = rtrim($CFG_GLPI['url_base'] ?? '', '/');
+        if (empty($base)) {
+            return $html;
+        }
+
+        // Also handle URL-encoded parameters inside Microsoft Outlook
+        // Safe Links wrappers, where ? becomes %3F and = becomes %3D.
+        return preg_replace_callback(
+            '#(<a\b[^>]*?\bhref\s*=\s*["\'][^"\']*?document\.send\.php(?:\?|%3F)[^"\']*?docid(?:=|%3D)(\d+)[^"\']*["\'][^>]*>)'
+            . '(.*?)'
+            . '(<img\b[^>]*?\bsrc\s*=\s*["\'])cid:[^"\']+(["\'][^>]*>)'
+            . '(.*?</a>)#si',
+            function ($m) use ($base) {
+                $docId = (int) $m[2];
+                $docUrl = $base . '/front/document.send.php?docid=' . $docId;
+
+                // Rebuild: keep <a> and surrounding content intact, swap img src only
+                return $m[1] . $m[3] . $m[4] . $docUrl . $m[5] . $m[6];
+            },
+            $html
+        );
+    }
+
+    /**
+     * Find all document.send.php image references in the HTML, embed them.
+     *
+     * @return string  The rewritten HTML with cid: image sources.
+     */
+    public static function embedDocumentImages(string $html, GLPIMailer $mailer): string
+    {
+        $embeddedDocIds = [];
+
+        return preg_replace_callback(
+            '#(<img\b[^>]*\bsrc\s*=\s*["\'])([^"\']*document\.send\.php\?[^"\']*docid=(\d+)[^"\']*)["\']#i',
+            function ($m) use ($mailer, &$embeddedDocIds) {
+                $prefix = $m[1];   // everything up to and including the opening quote
+                $docId = (int) $m[3];
+
+                $doc = new Document();
+                if (!$doc->getFromDB($docId)) {
+                    return $m[0]; // document not found – keep original
+                }
+
+                $filePath = GLPI_DOC_DIR . '/' . $doc->fields['filepath'];
+                if (!file_exists($filePath)) {
+                    return $m[0]; // file missing on disk – keep original
+                }
+
+                $cid      = 'glpi-doc-' . $docId;
+                $mime     = self::detectImageMimeType($doc->fields, $filePath);
+                if ($mime === '') {
+                    return $m[0]; // not an image, keep original URL
+                }
+
+                if (!isset($embeddedDocIds[$docId])) {
+                    $mailer->addEmbeddedImage($filePath, $cid, $cid, 'base64', $mime);
+                    $embeddedDocIds[$docId] = true;
+                }
+
+                return $prefix . 'cid:' . $cid . '"';
+            },
+            $html
+        );
+    }
+
+    /**
+     * Return a trusted image MIME type for a document file or '' if it is not an image.
+     */
+    private static function detectImageMimeType(array $documentFields, string $filePath): string
+    {
+        $candidates = [];
+
+        if (!empty($documentFields['mime'])) {
+            $candidates[] = trim((string) $documentFields['mime']);
+        }
+
+        if (function_exists('finfo_open')) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            if ($finfo !== false) {
+                $detected = finfo_file($finfo, $filePath);
+                finfo_close($finfo);
+                if (is_string($detected) && $detected !== '') {
+                    $candidates[] = $detected;
+                }
+            }
+        } elseif (function_exists('mime_content_type')) {
+            $detected = mime_content_type($filePath);
+            if (is_string($detected) && $detected !== '') {
+                $candidates[] = $detected;
+            }
+        }
+
+        if (!empty($documentFields['filename'])) {
+            $ext = strtolower(pathinfo((string) $documentFields['filename'], PATHINFO_EXTENSION));
+            $byExt = [
+                'avif' => 'image/avif',
+                'bmp' => 'image/bmp',
+                'gif' => 'image/gif',
+                'heic' => 'image/heic',
+                'jpeg' => 'image/jpeg',
+                'jpg' => 'image/jpeg',
+                'png' => 'image/png',
+                'svg' => 'image/svg+xml',
+                'webp' => 'image/webp',
+            ];
+            if (isset($byExt[$ext])) {
+                $candidates[] = $byExt[$ext];
+            }
+        }
+
+        foreach ($candidates as $candidate) {
+            if (stripos($candidate, 'image/') === 0) {
+                return $candidate;
+            }
+        }
+
+        return '';
+    }
+
+    /**
      * Assemble the email subject and rich HTML body from ticket data.
      */
-    public static function assembleContent(int $ticketId): array {
+    public static function assembleContent(int $ticketId): array
+    {
         global $DB;
 
         $meta = self::getTicketMeta($ticketId);
@@ -260,18 +393,22 @@ class PluginMailactionCompose extends CommonDBTM {
         // Tasks and followups
         $tasks = $DB->request([
             'SELECT' => ['date', 'content', 'is_private'],
-            'FROM'   => 'glpi_tickettasks',
-            'WHERE'  => ['tickets_id' => $ticketId],
+            'FROM' => 'glpi_tickettasks',
+            'WHERE' => ['tickets_id' => $ticketId],
         ]);
         $followups = $DB->request([
             'SELECT' => ['date', 'content', 'is_private'],
-            'FROM'   => 'glpi_itilfollowups',
-            'WHERE'  => ['itemtype' => 'Ticket', 'items_id' => $ticketId],
+            'FROM' => 'glpi_itilfollowups',
+            'WHERE' => ['itemtype' => 'Ticket', 'items_id' => $ticketId],
         ]);
 
         $entries = [];
-        foreach ($tasks as $row) { $entries[] = $row; }
-        foreach ($followups as $row) { $entries[] = $row; }
+        foreach ($tasks as $row) {
+            $entries[] = $row;
+        }
+        foreach ($followups as $row) {
+            $entries[] = $row;
+        }
         usort($entries, fn($a, $c) => strtotime($c['date']) - strtotime($a['date']));
 
         if (count($entries) > 0) {
@@ -296,7 +433,8 @@ class PluginMailactionCompose extends CommonDBTM {
     /**
      * Build one metadata row for the email body.
      */
-    private static function metaRow(string $label, string $value): string {
+    private static function metaRow(string $label, string $value): string
+    {
         return '<tr>'
             . '<td style="padding:6px 12px 6px 0;font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;vertical-align:top;width:140px;opacity:0.7;">' . $label . '</td>'
             . '<td style="padding:6px 0;font-size:14px;line-height:1.5;">' . $value . '</td>'
@@ -306,7 +444,8 @@ class PluginMailactionCompose extends CommonDBTM {
     /**
      * Collect the available "From" addresses for the current user.
      */
-    public static function getSenderAddresses(): array {
+    public static function getSenderAddresses(): array
+    {
         global $CFG_GLPI, $DB;
 
         $addresses = [];
@@ -320,8 +459,8 @@ class PluginMailactionCompose extends CommonDBTM {
 
         $rows = $DB->request([
             'SELECT' => ['email'],
-            'FROM'   => 'glpi_useremails',
-            'WHERE'  => ['users_id' => $_SESSION['glpiID']],
+            'FROM' => 'glpi_useremails',
+            'WHERE' => ['users_id' => $_SESSION['glpiID']],
         ]);
         foreach ($rows as $row) {
             $addresses[] = $row['email'];
@@ -333,31 +472,34 @@ class PluginMailactionCompose extends CommonDBTM {
     /**
      * Get the default email for a given user ID.
      */
-    public static function getUserEmail(int $userId): string {
+    public static function getUserEmail(int $userId): string
+    {
         return UserEmail::getDefaultForUser($userId) ?: '';
     }
 
     /**
      * Format a history log entry for the ticket timeline.
      */
-    public static function getHistoryEntry(array $data): string {
+    public static function getHistoryEntry(array $data): string
+    {
         return sprintf(__("An email was sent to %s"), $data['old_value']) . " : " . $data['new_value'];
     }
 
     /**
      * Render the email composition form on the ticket's MailAction tab.
      */
-    public static function showComposeForm(int $ticketId): void {
+    public static function showComposeForm(int $ticketId): void
+    {
         global $CFG_GLPI;
 
-        $recipients  = self::resolveRecipients($ticketId);
-        $content     = self::assembleContent($ticketId);
-        $senders     = self::getSenderAddresses();
+        $recipients = self::resolveRecipients($ticketId);
+        $content = self::assembleContent($ticketId);
+        $senders = self::getSenderAddresses();
 
         ?>
         <div class="container-fluid">
             <form method='post' action="<?php echo PLUGIN_MAILACTION_WEB_DIR . "/front/compose.form.php"; ?>">
-                <input type='hidden' name='id' value='<?php echo (int)$ticketId; ?>'>
+                <input type='hidden' name='id' value='<?php echo (int) $ticketId; ?>'>
 
                 <div class="card mb-3">
                     <div class="card-header">
@@ -385,14 +527,14 @@ class PluginMailactionCompose extends CommonDBTM {
                             <label class="col-sm-2 col-form-label fw-bold"><?php echo __('To', 'mailaction'); ?></label>
                             <div class="col-sm-10">
                                 <?php if (empty($recipients)): ?>
-                                    <p class="text-muted fst-italic mb-2"><?php echo __('No recipients with email addresses found on this ticket.', 'mailaction'); ?></p>
+                                    <p class="text-muted fst-italic mb-2">
+                                        <?php echo __('No recipients with email addresses found on this ticket.', 'mailaction'); ?>
+                                    </p>
                                 <?php else: ?>
                                     <?php foreach ($recipients as $i => $person): ?>
                                         <div class="form-check">
-                                            <input class="form-check-input recipient-checkbox" type="checkbox"
-                                                   name="recipients[]"
-                                                   value="<?php echo htmlspecialchars($person['email']); ?>"
-                                                   id="rcpt_<?php echo $i; ?>">
+                                            <input class="form-check-input recipient-checkbox" type="checkbox" name="recipients[]"
+                                                value="<?php echo htmlspecialchars($person['email']); ?>" id="rcpt_<?php echo $i; ?>">
                                             <label class="form-check-label" for="rcpt_<?php echo $i; ?>">
                                                 <?php echo htmlspecialchars($person['name']); ?>
                                                 <?php if ($person['name'] !== $person['email']): ?>
@@ -408,9 +550,8 @@ class PluginMailactionCompose extends CommonDBTM {
                                         <i class="fas fa-plus-circle me-1"></i>
                                         <?php echo __('Or enter a custom email address', 'mailaction'); ?>
                                     </label>
-                                    <input type='email' name='custom_address' id='custom_address'
-                                           class='form-control' style='max-width: 400px'
-                                           placeholder='email@example.com'>
+                                    <input type='email' name='custom_address' id='custom_address' class='form-control'
+                                        style='max-width: 400px' placeholder='email@example.com'>
                                 </div>
                             </div>
                         </div>
@@ -419,8 +560,8 @@ class PluginMailactionCompose extends CommonDBTM {
                             <div class="col-sm-2"></div>
                             <div class="col-sm-10">
                                 <div class="form-check">
-                                    <input type="checkbox" name="hide_private" id="hidePrivate"
-                                           value="1" class="form-check-input" checked>
+                                    <input type="checkbox" name="hide_private" id="hidePrivate" value="1"
+                                        class="form-check-input" checked>
                                     <label class="form-check-label" for="hidePrivate">
                                         <?php echo __('Hide private tasks and private followups', 'mailaction'); ?>
                                     </label>
@@ -432,14 +573,15 @@ class PluginMailactionCompose extends CommonDBTM {
                             <label class="col-sm-2 col-form-label fw-bold"><?php echo __('Subject', 'mailaction'); ?></label>
                             <div class="col-sm-10">
                                 <input type='text' name='subject' maxlength='200' class='form-control'
-                                       value='<?php echo htmlspecialchars($content['subject']); ?>'>
+                                    value='<?php echo htmlspecialchars($content['subject']); ?>'>
                             </div>
                         </div>
 
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label fw-bold"><?php echo __('Message', 'mailaction'); ?></label>
                             <div class="col-sm-10">
-                                <textarea name='body' id='composeBody' rows='20' class='form-control'><?php echo $content['body']; ?></textarea>
+                                <textarea name='body' id='composeBody' rows='20'
+                                    class='form-control'><?php echo $content['body']; ?></textarea>
                             </div>
                         </div>
 
@@ -455,7 +597,7 @@ class PluginMailactionCompose extends CommonDBTM {
                         </button>
                     </div>
                 </div>
-            <?php Html::closeForm(); ?>
+                <?php Html::closeForm(); ?>
         </div>
 
         <!-- Preview modal -->
@@ -495,7 +637,7 @@ class PluginMailactionCompose extends CommonDBTM {
             $ajaxCsrfToken = Session::getNewCSRFToken();
             ?>
             var mailactionPreviewUrl = '<?php echo $previewUrl; ?>';
-            var mailactionTicketId = <?php echo (int)$ticketId; ?>;
+            var mailactionTicketId = <?php echo (int) $ticketId; ?>;
             var mailactionCsrfToken = '<?php echo $ajaxCsrfToken; ?>';
 
             tinymce.init({
@@ -511,26 +653,26 @@ class PluginMailactionCompose extends CommonDBTM {
                 resize: true,
                 plugins: 'lists link image table code',
                 toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image table | code',
-                init_instance_callback: function(editor) {
+                init_instance_callback: function (editor) {
                     // Hide private entries by default (checkbox is checked on load)
                     if (document.getElementById('hidePrivate').checked) {
-                        editor.dom.doc.querySelectorAll('.is_private').forEach(function(el) {
+                        editor.dom.doc.querySelectorAll('.is_private').forEach(function (el) {
                             el.style.display = 'none';
                         });
                     }
                 }
             });
 
-            document.getElementById("hidePrivate").addEventListener("click", function() {
+            document.getElementById("hidePrivate").addEventListener("click", function () {
                 var iframe = document.getElementById('composeBody_ifr');
                 if (iframe) {
-                    iframe.contentDocument.querySelectorAll('.is_private').forEach(function(el) {
+                    iframe.contentDocument.querySelectorAll('.is_private').forEach(function (el) {
                         el.style.display = el.style.display === 'none' ? '' : 'none';
                     });
                 }
             });
 
-            document.getElementById('mailaction-preview-btn').addEventListener('click', function() {
+            document.getElementById('mailaction-preview-btn').addEventListener('click', function () {
                 var btn = this;
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i><?php echo __('Loading...', 'mailaction'); ?>';
@@ -548,34 +690,34 @@ class PluginMailactionCompose extends CommonDBTM {
                 formData.append('_glpi_csrf_token', mailactionCsrfToken);
 
                 fetch(mailactionPreviewUrl, { method: 'POST', body: formData })
-                    .then(function(r) {
+                    .then(function (r) {
                         var newToken = r.headers.get('X-Glpi-Csrf-Token');
                         if (newToken) {
                             mailactionCsrfToken = newToken;
                         }
                         return r.text();
                     })
-                    .then(function(html) {
+                    .then(function (html) {
                         var previewIframe = document.getElementById('mailaction-preview-iframe');
                         var modal = new bootstrap.Modal(document.getElementById('mailaction-preview-modal'));
                         modal.show();
-                        setTimeout(function() {
+                        setTimeout(function () {
                             var doc = previewIframe.contentDocument || previewIframe.contentWindow.document;
                             doc.open();
                             doc.write(html);
                             doc.close();
                         }, 150);
                     })
-                    .catch(function(err) {
+                    .catch(function (err) {
                         alert('Preview failed: ' + err.message);
                     })
-                    .finally(function() {
+                    .finally(function () {
                         btn.disabled = false;
                         btn.innerHTML = '<i class="fas fa-eye me-2"></i><?php echo __('Preview', 'mailaction'); ?>';
                     });
             });
 
-            document.querySelector('form').addEventListener('submit', function(e) {
+            document.querySelector('form').addEventListener('submit', function (e) {
                 var hasRecipient = document.querySelectorAll('.recipient-checkbox:checked').length > 0;
                 var hasCustom = document.getElementById('custom_address').value.trim() !== '';
                 if (!hasRecipient && !hasCustom) {

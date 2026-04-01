@@ -107,7 +107,24 @@ foreach ($addresses as $addr) {
 
 $mailer->isHTML(true);
 $mailer->Subject   = $subject;
+
+// Resolve orphaned cid: references (from inbound emails stored by GLPI)
+// back to document.send.php URLs so the next step can embed them.
+$fullHtml = PluginMailactionCompose::resolveCidImageReferences($fullHtml);
+
+// Embed GLPI document images as inline CID attachments so they render
+// without requiring a GLPI session (document.send.php needs auth).
+$fullHtml = PluginMailactionCompose::embedDocumentImages($fullHtml, $mailer);
+
+$plainText = html_entity_decode(strip_tags(str_replace(
+    ['<br>', '<br/>', '<br />', '</p>', '</div>', '</tr>', '</li>'],
+    ["\n", "\n", "\n", "\n\n", "\n", "\n", "\n"],
+    $fullHtml
+)), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+$plainText = preg_replace("/\n{3,}/", "\n\n", trim($plainText));
+
 $mailer->Body      = $fullHtml;
+$mailer->AltBody   = $plainText !== '' ? $plainText : $subject;
 $mailer->MessageID = "GLPI-MA-" . $ticketId . "-" . time() . "." . bin2hex(random_bytes(4)) . "@" . php_uname('n');
 
 if (!$mailer->send()) {
